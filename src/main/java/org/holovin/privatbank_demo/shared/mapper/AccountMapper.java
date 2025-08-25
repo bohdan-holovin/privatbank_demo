@@ -5,7 +5,6 @@ import org.holovin.privatbank_demo.shared.dto.AccountDto;
 
 public final class AccountMapper {
 
-    // dto
     public static AccountDto toAccountDto(Account account) {
         if (account == null) {
             return null;
