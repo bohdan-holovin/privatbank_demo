@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.entity;
+package org.holovin.privatbank_demo.domain.model.base;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,10 +1,8 @@
-package org.holovin.privatbank_demo.entity;
+package org.holovin.privatbank_demo.domain.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.holovin.privatbank_demo.domain.model.base.AbstractAuditable;
 
 import java.math.BigDecimal;
 
@@ -20,10 +18,14 @@ public class AccountCurrentBalance extends AbstractAuditable {
 
     private BigDecimal pendingBalance = BigDecimal.ZERO;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "last_transaction_id")
     private Transaction lastTransaction;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "account_id")
     private Account account;

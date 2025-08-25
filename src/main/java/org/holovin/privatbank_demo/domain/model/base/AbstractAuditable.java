@@ -1,9 +1,10 @@
-package org.holovin.privatbank_demo.entity;
+package org.holovin.privatbank_demo.domain.model.base;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.holovin.privatbank_demo.domain.model.User;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
