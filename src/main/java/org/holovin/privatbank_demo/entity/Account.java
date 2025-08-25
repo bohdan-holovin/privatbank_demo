@@ -17,30 +17,30 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Account extends AbstractAuditable {
 
-    @Column(nullable = false, unique = true, length = 20)
     private String number;
 
-    @Column(length = 20)
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Column
     private LocalDate closingDate;
 
-    @OneToMany(mappedBy = "fromAccount")
+    @OneToMany(mappedBy = "fromAccount",
+            fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private List<Transaction> outgoingTransactions;
 
-    @OneToMany(mappedBy = "toAccount")
+    @OneToMany(mappedBy = "toAccount",
+            fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private List<Transaction> incomingTransactions;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account",
+            fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private List<AccountDayBalance> balances;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private AccountCurrentBalance accountCurrentBalance;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "user_id")
     private User user;
 
     public enum Status {

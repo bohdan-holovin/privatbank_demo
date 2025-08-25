@@ -16,17 +16,15 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class AccountCurrentBalance extends AbstractAuditable {
 
-    @Column(name = "available_balance", nullable = false, precision = 15, scale = 2)
     private BigDecimal availableBalance;
 
-    @Column(name = "pending_balance", precision = 15, scale = 2)
     private BigDecimal pendingBalance = BigDecimal.ZERO;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "last_transaction_id")
     private Transaction lastTransaction;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "account_id")
     private Account account;
 }

@@ -16,16 +16,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class User extends AbstractAuditable {
 
-    @Column(nullable = false, length = 100)
     private String firstName;
-
-    @Column(nullable = false, length = 100)
     private String lastName;
-
-    @Column(unique = true)
     private String email;
-
-    @Column(length = 20)
     private String phone;
 
     @OneToMany(mappedBy = "user",

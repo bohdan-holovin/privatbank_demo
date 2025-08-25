@@ -17,29 +17,20 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class Transaction extends AbstractAuditable {
 
-    @Column(nullable = false, unique = true, length = 36)
     private String uuid;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "from_account_id")
     private Account fromAccount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "to_account_id")
     private Account toAccount;
 
-    @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
 
-    @Column(name = "status", length = 20)
     private String status = "pending";
-
-    @Column(name = "transaction_date", nullable = false)
     private LocalDateTime transactionDate;
-
-    @Column(name = "processed_at")
     private LocalDateTime processedAt;
-
-    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 }
