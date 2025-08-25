@@ -10,120 +10,144 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class DevOnlyDataInitService {
 
+    private static final long MIN_ACCOUNT_NUMBER = 1000000000000000L;
+    private static final int MAX_TRANSACTION_AMOUNT = 10000;
+    private static final int MIN_TRANSACTION_AMOUNT = 100;
+    private static final int MIN_ACCOUNT_BALANCE = 1000;
+    private static final int MAX_ACCOUNT_BALANCE = 100000;
+    private static final int MAX_DAILY_CHANGE = 1000;
+    private static final int MAX_DAILY_TRANSACTIONS = 20;
+    private static final int MAX_PROCESSING_MINUTES = 60;
+    private static final int PHONE_NUMBER_RANGE = 1000000000;
+    private static final int BALANCE_HISTORY_DAYS = 30;
+    private static final String PHONE_PREFIX = "+380";
+    private static final String EMAIL_TEMPLATE = "user%d@test.com";
+    private static final String ACCOUNT_NUMBER_TEMPLATE = "%016d";
+    private static final String TEST_TRANSACTION_DESCRIPTION = "Тестова транзакція №%d";
+    private static final List<String> FIRST_NAMES = Arrays.asList(
+            "Олександр", "Марія", "Андрій", "Олена", "Дмитро", "Наталія",
+            "Володимир", "Світлана", "Сергій", "Тетяна", "Віталій", "Ірина",
+            "Максим", "Юлія", "Роман", "Катерина"
+    );
+    private static final List<String> LAST_NAMES = Arrays.asList(
+            "Петренко", "Іваненко", "Коваленко", "Шевченко", "Бондаренко",
+            "Мельниченко", "Кравченко", "Ткаченко", "Савченко", "Поліщук",
+            "Гриценко", "Лисенко"
+    );
     private final UserRepository userRepository;
     private final Random random = new Random();
 
-    private final String[] FIRST_NAMES = {
-            "Олександр", "Марія", "Андрій", "Олена", "Дмитро", "Наталія", "Володимир", "Світлана",
-            "Сергій", "Тетяна", "Віталій", "Ірина", "Максим", "Юлія", "Роман", "Катерина"
-    };
-
-    private final String[] LAST_NAMES = {
-            "Петренко", "Іваненко", "Коваленко", "Шевченко", "Бондаренко", "Мельниченко",
-            "Кравченко", "Ткаченко", "Савченко", "Поліщук", "Гриценко", "Лисенко"
-    };
-
     @Transactional
     public int populateTestData(int userCount, int accountsPerUser, int transactionsPerAccount) {
-
-        var users = new ArrayList<User>();
-
-        for (int i = 0; i < userCount; i++) {
-            var user = createRandomUser(i);
-
-            var accounts = new ArrayList<Account>();
-            for (int j = 0; j < accountsPerUser; j++) {
-                var account = createRandomAccount(user, j);
-                accounts.add(account);
-
-                var transactions = createRandomTransactions(account, transactionsPerAccount);
-                account.setOutgoingTransactions(transactions);
-
-                var dayBalances = createRandomDayBalances(account, 30);
-                account.setBalances(dayBalances);
-
-                var currentBalance = createCurrentBalance(account);
-                account.setAccountCurrentBalance(currentBalance);
-            }
-
-            user.setAccounts(accounts);
-            users.add(user);
+        if (userCount < 0 || accountsPerUser < 0 || transactionsPerAccount < 0) {
+            throw new IllegalArgumentException("All parameters must be non-negative");
         }
 
-        userRepository.saveAll(users);
-        return users.size();
+        var users = IntStream.range(0, userCount)
+                .mapToObj(this::createUserWithAccounts)
+                .peek(user -> createAccountsForUser(user, accountsPerUser, transactionsPerAccount))
+                .toList();
+
+        var savedUsers = userRepository.saveAll(users);
+
+        return savedUsers.size();
+    }
+
+    private User createUserWithAccounts(int index) {
+        var user = createRandomUser(index);
+        user.setAccounts(new ArrayList<>());
+        return user;
+    }
+
+    private void createAccountsForUser(User user, int accountsPerUser, int transactionsPerAccount) {
+        var accounts = IntStream.range(0, accountsPerUser)
+                .mapToObj(accountIndex -> createAccountWithTransactions(user, accountIndex, transactionsPerAccount))
+                .toList();
+
+        user.setAccounts(accounts);
+    }
+
+    private Account createAccountWithTransactions(User user, int accountIndex, int transactionsPerAccount) {
+        var account = createRandomAccount(user, accountIndex);
+
+        var transactions = createRandomTransactions(account, transactionsPerAccount);
+        account.setOutgoingTransactions(transactions);
+
+        var dayBalances = createRandomDayBalances(account, BALANCE_HISTORY_DAYS);
+        account.setBalances(dayBalances);
+
+        var currentBalance = createCurrentBalance(account);
+        account.setAccountCurrentBalance(currentBalance);
+
+        return account;
     }
 
     private User createRandomUser(int index) {
         var user = new User();
-        user.setFirstName(FIRST_NAMES[random.nextInt(FIRST_NAMES.length)]);
-        user.setLastName(LAST_NAMES[random.nextInt(LAST_NAMES.length)]);
-        user.setEmail(String.format("user%d@test.com", index + 1));
-        user.setPhone(String.format("+380%09d", random.nextInt(1000000000)));
+        user.setFirstName(getRandomElement(FIRST_NAMES));
+        user.setLastName(getRandomElement(LAST_NAMES));
+        user.setEmail(String.format(EMAIL_TEMPLATE, index + 1));
+        user.setPhone(generateRandomPhoneNumber());
         return user;
     }
 
     private Account createRandomAccount(User user, int index) {
         var account = new Account();
-        account.setNumber(String.format("%016d", random.nextLong(1000000000000000L) + index));
-        account.setStatus(random.nextBoolean() ? Account.Status.ACTIVE : Account.Status.CLOSED);
+        account.setNumber(generateAccountNumber(index));
+        account.setStatus(getRandomAccountStatus());
         account.setUser(user);
 
         if (account.getStatus() == Account.Status.CLOSED) {
-            account.setClosingDate(LocalDate.now().minusDays(random.nextInt(365)));
+            account.setClosingDate(generateRandomPastDate(365));
         }
 
         return account;
     }
 
     private List<Transaction> createRandomTransactions(Account account, int count) {
-        var transactions = new ArrayList<Transaction>();
+        return IntStream.range(0, count)
+                .mapToObj(i -> createRandomTransaction(account, i))
+                .toList();
+    }
 
-        for (int i = 0; i < count; i++) {
-            Transaction transaction = new Transaction();
-            transaction.setUuid(UUID.randomUUID().toString());
-            transaction.setFromAccount(account);
-            transaction.setAmount(BigDecimal.valueOf(random.nextDouble() * 10000 + 100).setScale(2, RoundingMode.HALF_UP));
-            transaction.setStatus(random.nextBoolean() ? "completed" : "pending");
-            transaction.setTransactionDate(LocalDateTime.now().minusDays(random.nextInt(30)));
-            transaction.setDescription("Тестова транзакція №" + (i + 1));
+    private Transaction createRandomTransaction(Account account, int index) {
+        var transaction = new Transaction();
+        transaction.setUuid(UUID.randomUUID().toString());
+        transaction.setFromAccount(account);
+        transaction.setAmount(generateRandomAmount(MIN_TRANSACTION_AMOUNT, MAX_TRANSACTION_AMOUNT));
 
-            if (transaction.getStatus().equals("completed")) {
-                transaction.setProcessedAt(transaction.getTransactionDate().plusMinutes(random.nextInt(60)));
-            }
+        var status = getRandomTransactionStatus();
+        transaction.setStatus(status);
 
-            transactions.add(transaction);
+        var transactionDate = generateRandomPastDateTime(30);
+        transaction.setTransactionDate(transactionDate);
+        transaction.setDescription(String.format(TEST_TRANSACTION_DESCRIPTION, index + 1));
+
+        if ("completed".equals(status)) {
+            transaction.setProcessedAt(transactionDate.plusMinutes(
+                    random.nextInt(MAX_PROCESSING_MINUTES)));
         }
 
-        return transactions;
+        return transaction;
     }
 
     private List<AccountDayBalance> createRandomDayBalances(Account account, int days) {
-        var balances = new ArrayList<AccountDayBalance>();
-        var currentBalance = BigDecimal.valueOf(random.nextDouble() * 100000 + 1000);
+        var balances = new ArrayList<AccountDayBalance>(days);
+        var runningBalance = generateRandomAmount(MIN_ACCOUNT_BALANCE, MAX_ACCOUNT_BALANCE);
 
         for (int i = days - 1; i >= 0; i--) {
-            AccountDayBalance dayBalance = new AccountDayBalance();
-            dayBalance.setAccount(account);
-            dayBalance.setBalanceDate(LocalDate.now().minusDays(i));
-            dayBalance.setOpeningBalance(currentBalance);
+            var dayBalance = createDayBalance(account, i, runningBalance);
 
-            BigDecimal dailyChange = BigDecimal.valueOf((random.nextDouble() - 0.5) * 1000);
-            currentBalance = currentBalance.add(dailyChange);
-
-            dayBalance.setClosingBalance(currentBalance);
-            dayBalance.setTotalDebits(BigDecimal.valueOf(random.nextDouble() * 5000).setScale(2, RoundingMode.HALF_UP));
-            dayBalance.setTotalCredits(BigDecimal.valueOf(random.nextDouble() * 5000).setScale(2, RoundingMode.HALF_UP));
-            dayBalance.setTransactionCount(random.nextInt(20));
+            var dailyChange = generateRandomDailyChange();
+            runningBalance = runningBalance.add(dailyChange);
+            dayBalance.setClosingBalance(runningBalance);
 
             balances.add(dayBalance);
         }
@@ -131,11 +155,61 @@ public class DevOnlyDataInitService {
         return balances;
     }
 
+    private AccountDayBalance createDayBalance(Account account, int daysAgo, BigDecimal openingBalance) {
+        var dayBalance = new AccountDayBalance();
+        dayBalance.setAccount(account);
+        dayBalance.setBalanceDate(LocalDate.now().minusDays(daysAgo));
+        dayBalance.setOpeningBalance(openingBalance);
+        dayBalance.setTotalDebits(generateRandomAmount(0, 5000));
+        dayBalance.setTotalCredits(generateRandomAmount(0, 5000));
+        dayBalance.setTransactionCount(random.nextInt(MAX_DAILY_TRANSACTIONS));
+        return dayBalance;
+    }
+
     private AccountCurrentBalance createCurrentBalance(Account account) {
         var currentBalance = new AccountCurrentBalance();
         currentBalance.setAccount(account);
-        currentBalance.setAvailableBalance(BigDecimal.valueOf(random.nextDouble() * 100000 + 1000).setScale(2, RoundingMode.HALF_UP));
+        currentBalance.setAvailableBalance(generateRandomAmount(MIN_ACCOUNT_BALANCE, MAX_ACCOUNT_BALANCE));
         currentBalance.setModifiedDate(LocalDateTime.now());
         return currentBalance;
+    }
+
+    private <T> T getRandomElement(List<T> list) {
+        return list.get(random.nextInt(list.size()));
+    }
+
+    private String generateRandomPhoneNumber() {
+        return String.format("%s%09d", PHONE_PREFIX, random.nextInt(PHONE_NUMBER_RANGE));
+    }
+
+    private String generateAccountNumber(int index) {
+        long baseNumber = Math.abs(random.nextLong()) % MIN_ACCOUNT_NUMBER;
+        return String.format(ACCOUNT_NUMBER_TEMPLATE, baseNumber + index);
+    }
+
+    private Account.Status getRandomAccountStatus() {
+        return random.nextBoolean() ? Account.Status.ACTIVE : Account.Status.CLOSED;
+    }
+
+    private String getRandomTransactionStatus() {
+        return random.nextBoolean() ? "completed" : "pending";
+    }
+
+    private LocalDate generateRandomPastDate(int maxDaysAgo) {
+        return LocalDate.now().minusDays(random.nextInt(maxDaysAgo));
+    }
+
+    private LocalDateTime generateRandomPastDateTime(int maxDaysAgo) {
+        return LocalDateTime.now().minusDays(random.nextInt(maxDaysAgo));
+    }
+
+    private BigDecimal generateRandomAmount(int min, int max) {
+        double amount = random.nextDouble() * (max - min) + min;
+        return BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal generateRandomDailyChange() {
+        double change = (random.nextDouble() - 0.5) * MAX_DAILY_CHANGE;
+        return BigDecimal.valueOf(change).setScale(2, RoundingMode.HALF_UP);
     }
 }
