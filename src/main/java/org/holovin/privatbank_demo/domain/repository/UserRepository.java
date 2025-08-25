@@ -1,6 +1,6 @@
-package org.holovin.privatbank_demo.repository;
+package org.holovin.privatbank_demo.domain.repository;
 
-import org.holovin.privatbank_demo.entity.User;
+import org.holovin.privatbank_demo.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

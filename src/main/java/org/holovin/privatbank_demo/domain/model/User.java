@@ -1,10 +1,8 @@
-package org.holovin.privatbank_demo.entity;
+package org.holovin.privatbank_demo.domain.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.holovin.privatbank_demo.domain.model.base.AbstractAuditable;
 
 import java.util.List;
 
@@ -21,6 +19,8 @@ public class User extends AbstractAuditable {
     private String email;
     private String phone;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "user",
             fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private List<Account> accounts;

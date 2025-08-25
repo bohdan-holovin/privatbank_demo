@@ -1,8 +1,7 @@
-package org.holovin.privatbank_demo.service;
+package org.holovin.privatbank_demo.app.service;
 
 import lombok.RequiredArgsConstructor;
-import org.holovin.privatbank_demo.entity.*;
-import org.holovin.privatbank_demo.repository.UserRepository;
+import org.holovin.privatbank_demo.domain.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +30,7 @@ public class DevOnlyDataInitService {
     private static final String EMAIL_TEMPLATE = "user%d@test.com";
     private static final String ACCOUNT_NUMBER_TEMPLATE = "%016d";
     private static final String TEST_TRANSACTION_DESCRIPTION = "Тестова транзакція №%d";
+
     private static final List<String> FIRST_NAMES = Arrays.asList(
             "Олександр", "Марія", "Андрій", "Олена", "Дмитро", "Наталія",
             "Володимир", "Світлана", "Сергій", "Тетяна", "Віталій", "Ірина",
@@ -41,11 +41,11 @@ public class DevOnlyDataInitService {
             "Мельниченко", "Кравченко", "Ткаченко", "Савченко", "Поліщук",
             "Гриценко", "Лисенко"
     );
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final Random random = new Random();
 
     @Transactional
-    public int populateTestData(int userCount, int accountsPerUser, int transactionsPerAccount) {
+    public void populateTestData(int userCount, int accountsPerUser, int transactionsPerAccount) {
         if (userCount < 0 || accountsPerUser < 0 || transactionsPerAccount < 0) {
             throw new IllegalArgumentException("All parameters must be non-negative");
         }
@@ -55,9 +55,7 @@ public class DevOnlyDataInitService {
                 .peek(user -> createAccountsForUser(user, accountsPerUser, transactionsPerAccount))
                 .toList();
 
-        var savedUsers = userRepository.saveAll(users);
-
-        return savedUsers.size();
+        userService.saveAll(users);
     }
 
     private User createUserWithAccounts(int index) {
