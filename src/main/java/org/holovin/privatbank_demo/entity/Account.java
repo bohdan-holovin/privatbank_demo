@@ -1,57 +1,31 @@
 package org.holovin.privatbank_demo.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(
-    name = "accounts",
-    indexes = {
-        @Index(name = "idx_customer_id", columnList = "customer_id"),
-        @Index(name = "idx_account_number", columnList = "account_number")
-    }
-)
+@Table(name = "accounts")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Account {
+@EqualsAndHashCode(callSuper = true)
+public class Account extends AbstractAuditable {
 
-    @Id
-    @Column(name = "account_id")
-    private Long id;
+    @Column(nullable = false, unique = true, length = 20)
+    private String number;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
-    @Column(name = "account_number", nullable = false, unique = true, length = 20)
-    private String accountNumber;
-
-    @Column(name = "account_type", nullable = false, length = 20)
-    private String accountType;
-
-    @Column(name = "currency_code", length = 3, nullable = false)
-    private String currencyCode = "UAH";
-
-    @Column(name = "status", length = 20)
-    private String status = "active";
-
-    @Column(name = "opening_date", nullable = false)
-    private LocalDate openingDate;
-
-    @Column(name = "closing_date")
+    @Column
     private LocalDate closingDate;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "fromAccount")
     private List<Transaction> outgoingTransactions;
@@ -60,8 +34,17 @@ public class Account {
     private List<Transaction> incomingTransactions;
 
     @OneToMany(mappedBy = "account")
-    private List<AccountBalance> balances;
+    private List<AccountDayBalance> balances;
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-    private CurrentBalance currentBalance;
+    private AccountCurrentBalance accountCurrentBalance;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public enum Status {
+        ACTIVE,
+        CLOSED,
+    }
 }

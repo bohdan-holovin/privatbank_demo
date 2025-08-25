@@ -1,30 +1,21 @@
 package org.holovin.privatbank_demo.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(
-    name = "account_balances",
-    uniqueConstraints = @UniqueConstraint(name = "uk_account_date", columnNames = {"account_id", "balance_date"}),
-    indexes = {
-        @Index(name = "idx_balance_date", columnList = "balance_date")
-    }
-)
+@Table(name = "account_day_balances")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class AccountBalance {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "balance_id")
-    private Long id;
+@EqualsAndHashCode(callSuper = true)
+public class AccountDayBalance extends AbstractAuditable {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
@@ -47,7 +38,4 @@ public class AccountBalance {
 
     @Column(name = "transaction_count")
     private Integer transactionCount = 0;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 }

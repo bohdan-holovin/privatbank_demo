@@ -4,7 +4,9 @@ server:
 spring:
   application:
     name: privatbank_demo
-
+  h2:
+    console:
+      enabled: true
   datasource:
     url: jdbc:h2:mem:privatbankdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
     driver-class-name: org.h2.Driver
@@ -12,6 +14,7 @@ spring:
     password: password
   jpa:
     open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
 #    hibernate:
 #      ddl-auto: none
 
