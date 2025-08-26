@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.app.service;
+package org.holovin.privatbank_demo.app.usecase;
 
 import lombok.RequiredArgsConstructor;
 import org.holovin.privatbank_demo.domain.model.Transaction;
@@ -8,7 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class TransactionProcessor {
+public class ProcessTransactionUseCase {
+
     private final TransactionRepository transactionRepository;
 
     @Transactional

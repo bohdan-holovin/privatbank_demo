@@ -4,9 +4,9 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.holovin.privatbank_demo.app.service.TransactionProcessor;
+import org.holovin.privatbank_demo.app.service.TransactionService;
+import org.holovin.privatbank_demo.app.usecase.ProcessTransactionUseCase;
 import org.holovin.privatbank_demo.domain.model.Transaction;
-import org.holovin.privatbank_demo.domain.repository.TransactionRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executors;
@@ -24,8 +24,8 @@ public class TransactionPollingProcessor {
     private static final int batchSize = 5;
     private static final int pollingDelayMs = 2000;
 
-    private final TransactionRepository transactionRepository;
-    private final TransactionProcessor transactionProcessor;
+    private final TransactionService transactionService;
+    private final ProcessTransactionUseCase processTransactionUseCase;
     private final AtomicBoolean isShuttingDown = new AtomicBoolean(false);
 
     private ScheduledExecutorService scheduledExecutor;
@@ -61,7 +61,7 @@ public class TransactionPollingProcessor {
         log.info("Worker-{} ({}): search", workerId, threadName);
 
         try {
-            var transactions = transactionRepository.findPendingTransactions(batchSize);
+            var transactions = transactionService.findPendingTransactions(batchSize);
 
             if (!transactions.isEmpty()) {
                 log.info("Worker-{} ({}): claimed {} transactions", workerId, threadName, transactions.size());
@@ -76,7 +76,7 @@ public class TransactionPollingProcessor {
                     }
 
                     try {
-                        transactionProcessor.processTransaction(transaction);
+                        processTransactionUseCase.processTransaction(transaction);
                         processed++;
                         log.debug("Worker-{}: processed transaction {} {}", workerId, transaction.getId(), transaction.getUuid());
                     } catch (Exception e) {
