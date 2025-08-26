@@ -13,14 +13,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Builder
 public class Transaction extends AbstractAuditable {
 
     private String uuid;
     private BigDecimal amount;
-    private String status = "pending";
     private LocalDateTime transactionDate;
     private LocalDateTime processedAt;
-    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private Type type;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -33,4 +38,24 @@ public class Transaction extends AbstractAuditable {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "to_account_id")
     private Account toAccount;
+
+    public static Transaction createTopUp(String uuid, BigDecimal amount, Account toAccount, LocalDateTime dateTime) {
+        return Transaction.builder()
+                .uuid(uuid)
+                .amount(amount)
+                .transactionDate(dateTime)
+                .processedAt(dateTime)
+                .type(Type.TOP_UP)
+                .status(Status.PENDING)
+                .toAccount(toAccount)
+                .build();
+    }
+
+    public enum Type {
+        TOP_UP, TRANSFER, WITHDRAWAL
+    }
+
+    public enum Status {
+        PENDING, COMPLETED, FAILED
+    }
 }

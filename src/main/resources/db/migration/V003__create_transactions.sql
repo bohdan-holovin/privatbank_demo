@@ -6,10 +6,11 @@ CREATE TABLE transactions
     from_account_id  BIGINT,
     to_account_id    BIGINT,
     amount           DECIMAL(15, 2) NOT NULL,
-    status           VARCHAR(20) DEFAULT 'pending',
     transaction_date TIMESTAMP      NOT NULL,
     processed_at     TIMESTAMP,
-    description      TEXT,
+
+    type             VARCHAR(20),
+    status           VARCHAR(20),
 
     created_date     TIMESTAMP      NOT NULL,
     modified_date    TIMESTAMP      NOT NULL,

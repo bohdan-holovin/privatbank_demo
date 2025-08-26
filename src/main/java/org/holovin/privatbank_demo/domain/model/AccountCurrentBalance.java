@@ -29,4 +29,10 @@ public class AccountCurrentBalance extends AbstractAuditable {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "account_id")
     private Account account;
+
+    public AccountCurrentBalance addToAvailable(BigDecimal amount, Transaction lastTransaction) {
+        this.availableBalance = this.availableBalance.add(amount);
+        this.lastTransaction = lastTransaction;
+        return this;
+    }
 }

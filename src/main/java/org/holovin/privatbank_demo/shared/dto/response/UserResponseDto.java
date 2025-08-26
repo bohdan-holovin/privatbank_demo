@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.shared.dto;
+package org.holovin.privatbank_demo.shared.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class UserResponseDto {
     private Long id;
     private String firstName;
     private String lastName;
@@ -18,5 +18,5 @@ public class UserDto {
     private String phone;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-    private List<AccountDto> accounts;
+    private List<AccountResponseDto> accounts;
 }

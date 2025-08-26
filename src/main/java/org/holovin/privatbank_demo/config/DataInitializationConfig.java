@@ -1,7 +1,7 @@
 package org.holovin.privatbank_demo.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.holovin.privatbank_demo.app.service.DevOnlyDataInitService;
+import org.holovin.privatbank_demo.app.service.devonly.DevOnlyDataInitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
