@@ -13,10 +13,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
     public void saveAll(List<User> users) {
         userRepository.saveAll(users);
     }

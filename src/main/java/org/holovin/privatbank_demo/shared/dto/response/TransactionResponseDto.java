@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionDto {
+public class TransactionResponseDto {
 
     private Long id;
     private String uuid;

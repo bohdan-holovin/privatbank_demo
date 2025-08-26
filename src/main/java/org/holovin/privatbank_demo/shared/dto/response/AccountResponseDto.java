@@ -11,10 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountResponseDto {
+
     private Long id;
     private String accountNumber;
-    private BigDecimal balance;
-    private String currency;
+    private BigDecimal availableBalance;
+    private BigDecimal pendingBalance;
+    private String status;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 }
