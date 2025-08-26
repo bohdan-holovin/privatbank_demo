@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class PendingTransactionProcessor {
+public class PendingTransactionPollingAndProcessingManager {
 
     private static final int workerCount = 5;
     private static final int batchSize = 5;
