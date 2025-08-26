@@ -1,6 +1,7 @@
-package org.holovin.privatbank_demo.app.service;
+package org.holovin.privatbank_demo.app.service.devonly;
 
 import lombok.RequiredArgsConstructor;
+import org.holovin.privatbank_demo.app.service.UserService;
 import org.holovin.privatbank_demo.domain.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,6 @@ public class DevOnlyDataInitService {
     private static final String PHONE_PREFIX = "+380";
     private static final String EMAIL_TEMPLATE = "user%d@test.com";
     private static final String ACCOUNT_NUMBER_TEMPLATE = "%016d";
-    private static final String TEST_TRANSACTION_DESCRIPTION = "Тестова транзакція №%d";
 
     private static final List<String> FIRST_NAMES = Arrays.asList(
             "Олександр", "Марія", "Андрій", "Олена", "Дмитро", "Наталія",
@@ -82,7 +82,7 @@ public class DevOnlyDataInitService {
         account.setBalances(dayBalances);
 
         var currentBalance = createCurrentBalance(account);
-        account.setAccountCurrentBalance(currentBalance);
+        account.setCurrentBalance(currentBalance);
 
         return account;
     }
@@ -122,11 +122,9 @@ public class DevOnlyDataInitService {
         transaction.setAmount(generateRandomAmount(MIN_TRANSACTION_AMOUNT, MAX_TRANSACTION_AMOUNT));
 
         var status = getRandomTransactionStatus();
-        transaction.setStatus(status);
+        transaction.setStatus(Transaction.Status.COMPLETED);
 
         var transactionDate = generateRandomPastDateTime(30);
-        transaction.setTransactionDate(transactionDate);
-        transaction.setDescription(String.format(TEST_TRANSACTION_DESCRIPTION, index + 1));
 
         if ("completed".equals(status)) {
             transaction.setProcessedAt(transactionDate.plusMinutes(

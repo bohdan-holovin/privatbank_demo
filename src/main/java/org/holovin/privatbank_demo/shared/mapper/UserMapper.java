@@ -1,18 +1,18 @@
 package org.holovin.privatbank_demo.shared.mapper;
 
 import org.holovin.privatbank_demo.domain.model.User;
-import org.holovin.privatbank_demo.shared.dto.UserDto;
+import org.holovin.privatbank_demo.shared.dto.response.UserResponseDto;
 
 import java.util.stream.Collectors;
 
 public final class UserMapper {
 
-    public static UserDto toUserDto(User user) {
+    public static UserResponseDto toUserResponseDto(User user) {
         if (user == null) {
             return null;
         }
 
-        var dto = new UserDto();
+        var dto = new UserResponseDto();
         dto.setId(user.getId());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
@@ -23,7 +23,7 @@ public final class UserMapper {
 
         if (user.getAccounts() != null) {
             dto.setAccounts(user.getAccounts().stream()
-                    .map(AccountMapper::toAccountDto)
+                    .map(AccountMapper::toAccountResponseDto)
                     .collect(Collectors.toList()));
         }
 

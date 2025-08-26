@@ -2,6 +2,7 @@ package org.holovin.privatbank_demo.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.holovin.privatbank_demo.domain.exception.InsufficientFundsException;
 import org.holovin.privatbank_demo.domain.model.base.AbstractAuditable;
 
 import java.math.BigDecimal;
@@ -29,4 +30,23 @@ public class AccountCurrentBalance extends AbstractAuditable {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "account_id")
     private Account account;
+
+    public void reserveFunds(BigDecimal amount) {
+        if (availableBalance.compareTo(amount) < 0) {
+            throw new InsufficientFundsException("Not enough funds to reserve");
+        }
+        availableBalance = availableBalance.subtract(amount);
+        pendingBalance = pendingBalance.add(amount);
+    }
+
+    public void commitCredit(BigDecimal amount, Transaction transaction) {
+        pendingBalance = pendingBalance.subtract(amount).max(BigDecimal.ZERO);
+        availableBalance = availableBalance.add(amount);
+        lastTransaction = transaction;
+    }
+
+    public void commitDebit(BigDecimal amount, Transaction transaction) {
+        pendingBalance = pendingBalance.subtract(amount);
+        lastTransaction = transaction;
+    }
 }
