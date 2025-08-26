@@ -125,7 +125,6 @@ public class DevOnlyDataInitService {
         transaction.setStatus(Transaction.Status.COMPLETED);
 
         var transactionDate = generateRandomPastDateTime(30);
-        transaction.setTransactionDate(transactionDate);
 
         if ("completed".equals(status)) {
             transaction.setProcessedAt(transactionDate.plusMinutes(

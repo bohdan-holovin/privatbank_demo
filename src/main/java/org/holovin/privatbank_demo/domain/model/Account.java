@@ -2,12 +2,11 @@ package org.holovin.privatbank_demo.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.holovin.privatbank_demo.app.exception.InactiveAccountException;
+import org.holovin.privatbank_demo.domain.exception.InactiveAccountException;
 import org.holovin.privatbank_demo.domain.model.base.AbstractAuditable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,7 +54,7 @@ public class Account extends AbstractAuditable {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Transaction topUp(BigDecimal amount, LocalDateTime timestamp) {
+    public Transaction topUp(BigDecimal amount) {
         if (this.status != Status.ACTIVE) {
             throw new InactiveAccountException(number);
         }
@@ -64,8 +63,7 @@ public class Account extends AbstractAuditable {
             throw new IllegalArgumentException("Amount must be positive");
         }
 
-        var transaction = Transaction.createTopUp(UUID.randomUUID().toString(), amount, this, timestamp);
-        currentBalance = currentBalance.addToAvailable(amount, transaction);
+        var transaction = Transaction.createTopUp(UUID.randomUUID().toString(), amount, this);
         addIncomingTransaction(transaction);
         return transaction;
     }

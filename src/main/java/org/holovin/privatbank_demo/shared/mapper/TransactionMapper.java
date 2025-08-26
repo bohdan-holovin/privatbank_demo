@@ -15,7 +15,6 @@ public class TransactionMapper {
                 .uuid(transaction.getUuid())
                 .amount(transaction.getAmount())
                 .status(transaction.getStatus().name())
-                .transactionDate(transaction.getTransactionDate())
                 .processedAt(transaction.getProcessedAt())
                 .fromAccountNumber(transaction.getFromAccount() != null ? transaction.getFromAccount().getNumber() : null)
                 .toAccountNumber(transaction.getToAccount() != null ? transaction.getToAccount().getNumber() : null)

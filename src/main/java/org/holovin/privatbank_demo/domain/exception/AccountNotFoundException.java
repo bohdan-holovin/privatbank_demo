@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.app.exception;
+package org.holovin.privatbank_demo.domain.exception;
 
 public class AccountNotFoundException extends RuntimeException {
 

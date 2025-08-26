@@ -11,10 +11,6 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    Optional<Account> findByNumber(String number);
-
     @Query("SELECT a FROM Account a LEFT JOIN FETCH a.currentBalance WHERE a.number = :number")
     Optional<Account> findByNumberWithBalance(@Param("number") String number);
-
-    boolean existsByNumber(String number);
 }

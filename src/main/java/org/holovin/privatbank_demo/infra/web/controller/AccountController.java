@@ -18,9 +18,7 @@ public class AccountController {
 
     @PostMapping("/api/top-up")
     public ResponseEntity<TransactionDto> topUpAccount(@Valid @RequestBody AccountTopUpRequestDto request) {
-
         var transaction = topUpAccountUseCase.execute(request);
-
         return ResponseEntity.ok(transaction);
     }
 }

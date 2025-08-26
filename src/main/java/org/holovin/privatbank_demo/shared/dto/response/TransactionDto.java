@@ -18,7 +18,6 @@ public class TransactionDto {
     private String uuid;
     private BigDecimal amount;
     private String status;
-    private LocalDateTime transactionDate;
     private LocalDateTime processedAt;
     private String description;
     private String fromAccountNumber;
