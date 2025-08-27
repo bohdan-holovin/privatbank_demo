@@ -1,16 +1,16 @@
 package org.holovin.privatbank_demo.shared.mapper;
 
 import org.holovin.privatbank_demo.domain.model.Transaction;
-import org.holovin.privatbank_demo.shared.dto.response.TransactionDto;
+import org.holovin.privatbank_demo.shared.dto.response.TransactionResponseDto;
 
 public class TransactionMapper {
 
-    public static TransactionDto toTransactionDto(Transaction transaction) {
+    public static TransactionResponseDto toTransactionDto(Transaction transaction) {
         if (transaction == null) {
             return null;
         }
 
-        return TransactionDto.builder()
+        return TransactionResponseDto.builder()
                 .id(transaction.getId())
                 .uuid(transaction.getUuid())
                 .amount(transaction.getAmount())

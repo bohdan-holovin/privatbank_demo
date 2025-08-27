@@ -75,10 +75,10 @@ public class Transaction extends AbstractAuditable {
 
         } catch (InsufficientFundsException e) {
             this.status = Status.FAILED;
-            this.failureReason = "Недостатньо коштів";
+            this.failureReason = "Insufficient funds";
         } catch (Exception e) {
             this.status = Status.FAILED;
-            this.failureReason = "Помилка обробки: " + e.getMessage();
+            this.failureReason = "Processing error: " + e.getMessage().substring(0, 100);
         }
     }
 

@@ -1,4 +1,4 @@
-CREATE TABLE account_day_balances
+CREATE TABLE day_balances
 (
     id                BIGSERIAL PRIMARY KEY,
 
@@ -15,7 +15,7 @@ CREATE TABLE account_day_balances
     created_by_id     BIGINT,
     modified_by_id    BIGINT,
 
-    CONSTRAINT fk_account_day_balances_account FOREIGN KEY (account_id) REFERENCES accounts (id),
-    CONSTRAINT fk_account_day_balances_created_by FOREIGN KEY (created_by_id) REFERENCES users (id),
-    CONSTRAINT fk_account_day_balances_modified_by FOREIGN KEY (modified_by_id) REFERENCES users (id)
+    CONSTRAINT fk_day_balances_account FOREIGN KEY (account_id) REFERENCES accounts (id),
+    CONSTRAINT fk_day_balances_created_by FOREIGN KEY (created_by_id) REFERENCES users (id),
+    CONSTRAINT fk_day_balances_modified_by FOREIGN KEY (modified_by_id) REFERENCES users (id)
 );
