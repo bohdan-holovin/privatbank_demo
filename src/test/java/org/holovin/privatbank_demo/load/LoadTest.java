@@ -27,10 +27,10 @@ import java.util.stream.IntStream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 @Slf4j
-public class LoadStressTest {
+public class LoadTest {
 
     private static final int CONCURRENT_USERS = 50;
     private static final int REQUESTS_PER_USER = 20;
@@ -66,7 +66,7 @@ public class LoadStressTest {
 
         CompletableFuture.allOf(transactionTasks.toArray(new CompletableFuture[0])).join();
 
-        Thread.sleep(45000);
+        Thread.sleep(40000);
 
         printResults();
         printTransactionStatistics(getTransactionCount());

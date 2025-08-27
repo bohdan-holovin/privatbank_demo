@@ -17,3 +17,6 @@ CREATE TABLE day_balances
     CONSTRAINT fk_day_balances_created_by FOREIGN KEY (created_by_id) REFERENCES users (id),
     CONSTRAINT fk_day_balances_modified_by FOREIGN KEY (modified_by_id) REFERENCES users (id)
 );
+
+CREATE INDEX idx_day_balances_balance_date ON day_balances (balance_date);
+CREATE INDEX idx_day_balances_account_id ON day_balances (account_id);
