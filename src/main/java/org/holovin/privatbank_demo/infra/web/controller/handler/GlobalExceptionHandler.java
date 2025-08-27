@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.infra.web.controller;
+package org.holovin.privatbank_demo.infra.web.controller.handler;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;

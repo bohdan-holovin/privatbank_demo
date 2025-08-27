@@ -4,17 +4,18 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import org.holovin.privatbank_demo.app.usecase.GetCurrentBalanceUseCase;
-import org.holovin.privatbank_demo.app.usecase.TopUpAccountUseCase;
-import org.holovin.privatbank_demo.app.usecase.TransferUseCase;
-import org.holovin.privatbank_demo.app.usecase.WithdrawAccountUseCase;
+import org.holovin.privatbank_demo.app.usecase.*;
 import org.holovin.privatbank_demo.shared.dto.request.AccountTopUpRequestDto;
 import org.holovin.privatbank_demo.shared.dto.request.AccountTransferRequestDto;
 import org.holovin.privatbank_demo.shared.dto.request.AccountWithdrawRequestDto;
+import org.holovin.privatbank_demo.shared.dto.response.AccountByDateResponseDto;
 import org.holovin.privatbank_demo.shared.dto.response.AccountResponseDto;
 import org.holovin.privatbank_demo.shared.dto.response.TransactionResponseDto;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,11 +25,21 @@ public class AccountController {
     private final TopUpAccountUseCase topUpAccountUseCase;
     private final TransferUseCase transferUseCase;
     private final WithdrawAccountUseCase withdrawAccountUseCase;
+    private final GetBalanceByDateUseCase getBalanceByDateUseCase;
 
     @GetMapping("/accounts/{id}/balance")
-    public ResponseEntity<AccountResponseDto> getBalance(@PathVariable @Valid @NotNull @Positive Long id) {
+    public ResponseEntity<AccountResponseDto> getCurrentBalance(@PathVariable @NotNull @Positive Long id) {
         var accountResponseDto = getCurrentBalanceUseCase.execute(id);
         return ResponseEntity.ok(accountResponseDto);
+    }
+
+    @GetMapping("/accounts/{id}/balance/{date}")
+    public ResponseEntity<AccountByDateResponseDto> getBalanceByDate(
+            @PathVariable @NotNull @Positive Long id,
+            @PathVariable @NotNull @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date
+    ) {
+        var accountByDateResponseDto = getBalanceByDateUseCase.execute(id, date);
+        return ResponseEntity.ok(accountByDateResponseDto);
     }
 
     @PostMapping("/accounts/top-up")

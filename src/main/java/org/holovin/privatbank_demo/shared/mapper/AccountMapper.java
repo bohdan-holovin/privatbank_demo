@@ -2,6 +2,8 @@ package org.holovin.privatbank_demo.shared.mapper;
 
 import org.holovin.privatbank_demo.domain.model.Account;
 import org.holovin.privatbank_demo.domain.model.CurrentBalance;
+import org.holovin.privatbank_demo.domain.model.DayBalance;
+import org.holovin.privatbank_demo.shared.dto.response.AccountByDateResponseDto;
 import org.holovin.privatbank_demo.shared.dto.response.AccountResponseDto;
 
 public final class AccountMapper {
@@ -31,6 +33,20 @@ public final class AccountMapper {
         dto.setStatus(account.getStatus().name());
         dto.setCreatedDate(account.getCreatedDate());
         dto.setModifiedDate(account.getModifiedDate());
+
+        return dto;
+    }
+
+    public static AccountByDateResponseDto toAccountByDateResponseDto(DayBalance dayBalance) {
+        var dto = new AccountByDateResponseDto();
+
+        dto.setId(dayBalance.getId());
+        dto.setAccountId(dayBalance.getAccount().getId());
+        dto.setAvailableBalance(dayBalance.getAvailableBalance());
+        dto.setPendingBalance(dayBalance.getPendingBalance());
+        dto.setDate(dayBalance.getBalanceDate());
+        dto.setCreatedDate(dayBalance.getCreatedDate());
+        dto.setModifiedDate(dayBalance.getModifiedDate());
 
         return dto;
     }
