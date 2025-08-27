@@ -16,11 +16,8 @@ import java.time.LocalDate;
 public class DayBalance extends AbstractAuditable {
 
     private LocalDate balanceDate;
-    private BigDecimal openingBalance;
-    private BigDecimal closingBalance;
-    private BigDecimal totalDebits = BigDecimal.ZERO;
-    private BigDecimal totalCredits = BigDecimal.ZERO;
-    private Integer transactionCount = 0;
+    private BigDecimal availableBalance;
+    private BigDecimal pendingBalance;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
