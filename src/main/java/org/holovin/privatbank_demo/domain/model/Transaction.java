@@ -100,7 +100,9 @@ public class Transaction extends AbstractAuditable {
             this.failureReason = "Insufficient funds";
         } catch (Exception e) {
             this.status = Status.FAILED;
-            this.failureReason = "Processing error: " + e.getMessage().substring(0, 100);
+            var message = e.getMessage();
+            this.failureReason = "Processing error: " +
+                    (message != null ? message.substring(0, Math.min(100, message.length())) : "");
         }
     }
 

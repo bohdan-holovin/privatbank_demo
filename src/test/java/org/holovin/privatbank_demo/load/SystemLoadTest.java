@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 @Slf4j
-class LoadTest {
+class SystemLoadTest {
 
     private static final int CONCURRENT_USERS = 50;
     private static final int REQUESTS_PER_USER = 500;

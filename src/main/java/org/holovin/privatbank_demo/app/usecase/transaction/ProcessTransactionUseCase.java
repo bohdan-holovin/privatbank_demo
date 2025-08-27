@@ -21,12 +21,11 @@ public class ProcessTransactionUseCase {
             maxAttempts = 5,
             backoff = @Backoff(delay = 50, multiplier = 2, maxDelay = 1000)
     )
-    public void processTransaction(Transaction tx) {
+    public void execute(Transaction tx) {
         if (tx == null || tx.getId() == null) {
             throw new IllegalArgumentException("transaction must be persisted");
         }
         var transaction = transactionService.findById(tx.getId());
         transaction.process();
-        transactionService.save(transaction);
     }
 }
