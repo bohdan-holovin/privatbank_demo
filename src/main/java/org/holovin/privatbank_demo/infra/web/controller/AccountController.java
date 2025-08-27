@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import org.holovin.privatbank_demo.app.usecase.*;
+import org.holovin.privatbank_demo.app.port.in.*;
 import org.holovin.privatbank_demo.shared.dto.request.AccountTopUpRequestDto;
 import org.holovin.privatbank_demo.shared.dto.request.AccountTransferRequestDto;
 import org.holovin.privatbank_demo.shared.dto.request.AccountWithdrawRequestDto;
@@ -22,16 +22,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final GetCurrentBalanceUseCase getCurrentBalanceUseCase;
-    private final TopUpAccountUseCase topUpAccountUseCase;
-    private final TransferUseCase transferUseCase;
-    private final WithdrawAccountUseCase withdrawAccountUseCase;
-    private final GetBalanceByDateUseCase getBalanceByDateUseCase;
-    private final GetTransactionsUseCase getTransactionsUseCase;
+    private final GetCurrentBalanceInPort getCurrentBalanceInPort;
+    private final TopUpAccountInPort topUpAccountInPort;
+    private final TransferFromInPort transferFromInPort;
+    private final WithdrawAccountInPort withdrawAccountInPort;
+    private final GetBalanceByDateInPort getBalanceByDateInPort;
+    private final GetTransactionsInPort getTransactionsInPort;
 
     @GetMapping("/accounts/{id}/balance")
     public ResponseEntity<AccountResponseDto> getCurrentBalance(@PathVariable @NotNull @Positive Long id) {
-        var accountResponseDto = getCurrentBalanceUseCase.execute(id);
+        var accountResponseDto = getCurrentBalanceInPort.execute(id);
         return ResponseEntity.ok(accountResponseDto);
     }
 
@@ -40,25 +40,25 @@ public class AccountController {
             @PathVariable @NotNull @Positive Long id,
             @PathVariable @NotNull @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date
     ) {
-        var accountByDateResponseDto = getBalanceByDateUseCase.execute(id, date);
+        var accountByDateResponseDto = getBalanceByDateInPort.execute(id, date);
         return ResponseEntity.ok(accountByDateResponseDto);
     }
 
     @PostMapping("/accounts/top-up")
     public ResponseEntity<TransactionResponseDto> topUp(@Valid @RequestBody AccountTopUpRequestDto request) {
-        var transactionResponseDto = topUpAccountUseCase.execute(request);
+        var transactionResponseDto = topUpAccountInPort.execute(request);
         return ResponseEntity.ok(transactionResponseDto);
     }
 
     @PostMapping("/accounts/transfer")
     public ResponseEntity<TransactionResponseDto> transfer(@Valid @RequestBody AccountTransferRequestDto request) {
-        var transactionResponseDto = transferUseCase.execute(request);
+        var transactionResponseDto = transferFromInPort.execute(request);
         return ResponseEntity.ok(transactionResponseDto);
     }
 
     @PostMapping("/accounts/withdraw")
     public ResponseEntity<TransactionResponseDto> withdraw(@Valid @RequestBody AccountWithdrawRequestDto request) {
-        var transactionResponseDto = withdrawAccountUseCase.execute(request);
+        var transactionResponseDto = withdrawAccountInPort.execute(request);
         return ResponseEntity.ok(transactionResponseDto);
     }
 
@@ -68,7 +68,7 @@ public class AccountController {
             @RequestParam(required = false, defaultValue = "50") Integer limit,
             @RequestParam(required = false, defaultValue = "0") Integer offset
     ) {
-        var accountByDateResponseDto = getTransactionsUseCase.execute(id, limit, offset);
+        var accountByDateResponseDto = getTransactionsInPort.execute(id, limit, offset);
         return ResponseEntity.ok(accountByDateResponseDto);
     }
 }

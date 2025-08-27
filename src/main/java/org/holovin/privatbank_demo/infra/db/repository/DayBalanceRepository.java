@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.domain.repository;
+package org.holovin.privatbank_demo.infra.db.repository;
 
 import org.holovin.privatbank_demo.domain.model.DayBalance;
 import org.springframework.data.jpa.repository.JpaRepository;

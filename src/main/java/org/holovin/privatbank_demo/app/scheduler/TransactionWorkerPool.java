@@ -5,7 +5,7 @@ import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.holovin.privatbank_demo.app.service.TransactionService;
-import org.holovin.privatbank_demo.app.usecase.ProcessTransactionUseCase;
+import org.holovin.privatbank_demo.app.usecase.worker.ProcessTransactionUseCase;
 import org.holovin.privatbank_demo.domain.model.Transaction;
 import org.springframework.stereotype.Component;
 
