@@ -23,7 +23,7 @@ public class WithdrawAccountUseCase {
             var transaction = account.withdraw(request.getAmount());
             return TransactionMapper.toTransactionDto(transaction);
         } catch (Exception e) {
-            throw new RuntimeException("An unexpected error occurred while processing top-up for account: " + e.getMessage(), e);
+            throw new RuntimeException("An unexpected error occurred while processing withdraw for account: " + e.getMessage(), e);
         }
     }
 }
