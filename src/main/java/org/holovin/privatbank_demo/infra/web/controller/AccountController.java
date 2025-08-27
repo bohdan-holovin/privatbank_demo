@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class AccountController {
     private final TransferUseCase transferUseCase;
     private final WithdrawAccountUseCase withdrawAccountUseCase;
     private final GetBalanceByDateUseCase getBalanceByDateUseCase;
+    private final GetTransactionsUseCase getTransactionsUseCase;
 
     @GetMapping("/accounts/{id}/balance")
     public ResponseEntity<AccountResponseDto> getCurrentBalance(@PathVariable @NotNull @Positive Long id) {
@@ -58,5 +60,15 @@ public class AccountController {
     public ResponseEntity<TransactionResponseDto> withdraw(@Valid @RequestBody AccountWithdrawRequestDto request) {
         var transactionResponseDto = withdrawAccountUseCase.execute(request);
         return ResponseEntity.ok(transactionResponseDto);
+    }
+
+    @GetMapping("/accounts/{id}/transactions")
+    public ResponseEntity<List<TransactionResponseDto>> getTransactions(
+            @PathVariable @NotNull @Positive Long id,
+            @RequestParam(required = false, defaultValue = "50") Integer limit,
+            @RequestParam(required = false, defaultValue = "0") Integer offset
+    ) {
+        var accountByDateResponseDto = getTransactionsUseCase.execute(id, limit, offset);
+        return ResponseEntity.ok(accountByDateResponseDto);
     }
 }
