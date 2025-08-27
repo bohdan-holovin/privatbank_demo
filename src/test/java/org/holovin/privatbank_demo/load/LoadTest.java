@@ -69,7 +69,7 @@ public class LoadTest {
         Thread.sleep(60000);
 
         printResults();
-        printTransactionStatistics(getTransactionCount());
+        printTransactionStatistics();
     }
 
     private void createUser(int userIndex) {
@@ -207,21 +207,20 @@ public class LoadTest {
 
     }
 
-    private void printTransactionStatistics(long initialCount) {
+    private void printTransactionStatistics() {
         try {
-            TransactionStats stats = getTransactionStats();
-            long totalCreatedTransactions = stats.totalTransactions - initialCount;
+            var stats = getTransactionStats();
 
             log.info("===== TRANSACTION STATISTICS IN DB =====");
-            log.info("Transactions created during test: {}", totalCreatedTransactions);
+            log.info("Transactions created during test: {}", stats.totalTransactions);
             log.info("PENDING: {} ({}%)", stats.pending,
-                    String.format("%.2f", calculatePercentage(stats.pending, totalCreatedTransactions)));
+                    String.format("%.2f", calculatePercentage(stats.pending, stats.totalTransactions)));
             log.info("PROCESSING: {} ({}%)", stats.processing,
-                    String.format("%.2f", calculatePercentage(stats.processing, totalCreatedTransactions)));
+                    String.format("%.2f", calculatePercentage(stats.processing, stats.totalTransactions)));
             log.info("COMPLETED: {} ({}%)", stats.completed,
-                    String.format("%.2f", calculatePercentage(stats.completed, totalCreatedTransactions)));
+                    String.format("%.2f", calculatePercentage(stats.completed, stats.totalTransactions)));
             log.info("FAILED: {} ({}%)", stats.failed,
-                    String.format("%.2f", calculatePercentage(stats.failed, totalCreatedTransactions)));
+                    String.format("%.2f", calculatePercentage(stats.failed, stats.totalTransactions)));
 
             log.info("===== STATISTICS BY TRANSACTION TYPE =====");
             log.info("TOP_UP: {}", stats.topUp);
@@ -240,11 +239,6 @@ public class LoadTest {
         } catch (Exception e) {
             log.error("Error while fetching transaction statistics: {}", e.getMessage());
         }
-    }
-
-    private long getTransactionCount() {
-        var query = entityManager.createQuery("SELECT COUNT(t) FROM Transaction t");
-        return (Long) query.getSingleResult();
     }
 
     private TransactionStats getTransactionStats() {
