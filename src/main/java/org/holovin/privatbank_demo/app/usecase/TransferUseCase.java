@@ -24,7 +24,7 @@ public class TransferUseCase {
             var transaction = fromAccount.transferTo(toAccount, request.getAmount());
             return TransactionMapper.toTransactionDto(transaction);
         } catch (Exception e) {
-            throw new RuntimeException("An unexpected error occurred while processing top-up for account: " + e.getMessage(), e);
+            throw new RuntimeException("An unexpected error occurred while processing transfer: " + e.getMessage(), e);
         }
     }
 }
