@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
@@ -21,5 +22,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             """,
             nativeQuery = true)
     List<Transaction> findPendingTransactions(@Param("limit") int limit);
+
+    Optional<Transaction> findByUuid(String uuid);
 }
 

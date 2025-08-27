@@ -7,6 +7,7 @@ import org.holovin.privatbank_demo.domain.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -17,5 +18,9 @@ public class TransactionService {
 
     public List<Transaction> findPendingTransactions(int limit) {
         return transactionRepository.findPendingTransactions(limit);
+    }
+
+    public Optional<Transaction> findByUuidOptional(String uuid) {
+        return transactionRepository.findByUuid(uuid);
     }
 }

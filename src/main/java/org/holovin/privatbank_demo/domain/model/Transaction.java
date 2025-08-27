@@ -65,6 +65,17 @@ public class Transaction extends AbstractAuditable {
                 .build();
     }
 
+    public static Transaction createWithdraw(String uuid, BigDecimal amount, Account fromAccount) {
+        return Transaction.builder()
+                .uuid(uuid)
+                .amount(amount)
+                .processedAt(null)
+                .type(Type.WITHDRAW)
+                .status(Status.PENDING)
+                .fromAccount(fromAccount)
+                .build();
+    }
+
     public void process() {
         this.status = Status.PROCESSING;
 
@@ -94,19 +105,12 @@ public class Transaction extends AbstractAuditable {
         }
     }
 
-    public static Transaction createWithdraw(String uuid, BigDecimal amount, Account fromAccount) {
-        return Transaction.builder()
-                .uuid(uuid)
-                .amount(amount)
-                .processedAt(null)
-                .type(Type.WITHDRAW)
-                .status(Status.PENDING)
-                .fromAccount(fromAccount)
-                .build();
-    }
-
     private boolean isDebitOperation() {
         return type == Type.TRANSFER || type == Type.WITHDRAW;
+    }
+
+    public boolean isSameOperation(BigDecimal amount, Type type) {
+        return this.amount.compareTo(amount) == 0 && this.type == type;
     }
 
     public enum Type {

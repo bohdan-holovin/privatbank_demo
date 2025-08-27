@@ -2,6 +2,7 @@ package org.holovin.privatbank_demo.infra.web.controller.handler;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.holovin.privatbank_demo.app.exception.DuplicateTransactionException;
 import org.holovin.privatbank_demo.domain.exception.InactiveAccountException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,16 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleBusinessErrors(EntityNotFoundException ex) {
+    public ResponseEntity<Map<String, String>> handleNotFound(EntityNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateTransactionException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicateTransaction(DuplicateTransactionException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
                 .body(Map.of("error", ex.getMessage()));
     }
 

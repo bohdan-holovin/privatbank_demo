@@ -73,7 +73,7 @@ public class Account extends AbstractAuditable {
         this.currentBalance = currentBalance;
     }
 
-    public Transaction topUp(BigDecimal amount) {
+    public Transaction topUp(BigDecimal amount, String uuid) {
         if (this.status != Status.ACTIVE) {
             throw new InactiveAccountException(number);
         }
@@ -82,12 +82,12 @@ public class Account extends AbstractAuditable {
             throw new IllegalArgumentException("Amount must be positive");
         }
 
-        var transaction = Transaction.createTopUp(UUID.randomUUID().toString(), amount, this);
+        var transaction = Transaction.createTopUp(uuid, amount, this);
         addIncomingTransaction(transaction);
         return transaction;
     }
 
-    public Transaction transferTo(Account targetAccount, BigDecimal amount) {
+    public Transaction transferTo(Account targetAccount, BigDecimal amount, String uuid) {
         if (this.status != Status.ACTIVE) {
             throw new InactiveAccountException(this.number);
         }
@@ -101,7 +101,7 @@ public class Account extends AbstractAuditable {
             throw new InsufficientFundsException("Not enough funds to reserve");
         }
 
-        var transaction = Transaction.createTransfer(UUID.randomUUID().toString(), amount, this, targetAccount);
+        var transaction = Transaction.createTransfer(uuid, amount, this, targetAccount);
 
         addOutgoingTransaction(transaction);
         targetAccount.addIncomingTransaction(transaction);
@@ -109,7 +109,7 @@ public class Account extends AbstractAuditable {
         return transaction;
     }
 
-    public Transaction withdraw(BigDecimal amount) {
+    public Transaction withdraw(BigDecimal amount, String uuid) {
         if (this.status != Status.ACTIVE) {
             throw new InactiveAccountException(number);
         }
@@ -122,7 +122,7 @@ public class Account extends AbstractAuditable {
             throw new InsufficientFundsException("Not enough funds to reserve");
         }
 
-        var transaction = Transaction.createWithdraw(UUID.randomUUID().toString(), amount, this);
+        var transaction = Transaction.createWithdraw(uuid, amount, this);
         addOutgoingTransaction(transaction);
         return transaction;
     }

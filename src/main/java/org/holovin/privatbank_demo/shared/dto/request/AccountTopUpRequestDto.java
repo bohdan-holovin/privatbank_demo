@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UUID;
 
 import java.math.BigDecimal;
 
@@ -13,6 +14,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountTopUpRequestDto {
+
+    @UUID
+    private String uuid;
 
     @NotBlank
     private String accountNumber;

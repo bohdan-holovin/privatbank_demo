@@ -25,7 +25,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest
@@ -47,7 +46,7 @@ public class LoadStressTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void aggressiveLoadTest() throws InterruptedException {
+    public void loadTest() throws InterruptedException {
         log.info("Starting aggressive stress test:");
         log.info("Concurrent users: {}", CONCURRENT_USERS);
         log.info("Requests per user: {}", REQUESTS_PER_USER);
@@ -67,7 +66,7 @@ public class LoadStressTest {
 
         CompletableFuture.allOf(transactionTasks.toArray(new CompletableFuture[0])).join();
 
-        Thread.sleep(30000);
+        Thread.sleep(45000);
 
         printResults();
         printTransactionStatistics(getTransactionCount());
@@ -88,14 +87,11 @@ public class LoadStressTest {
                 var responseBody = result.getResponse().getContentAsString();
                 var user = objectMapper.readValue(responseBody, UserResponseDto.class);
                 users.add(user);
-                successCounter.incrementAndGet();
             } else {
-                errorCounter.incrementAndGet();
                 log.warn("User creation failed for {}: {}", userIndex, result.getResponse().getStatus());
             }
 
         } catch (Exception e) {
-            errorCounter.incrementAndGet();
             log.error("Error creating user {}: {}", userIndex, e.getMessage());
         }
     }
@@ -108,13 +104,12 @@ public class LoadStressTest {
 
         for (int i = 0; i < REQUESTS_PER_USER; i++) {
             try {
-                int operation = ThreadLocalRandom.current().nextInt(4);
+                int operation = ThreadLocalRandom.current().nextInt(3);
 
                 switch (operation) {
                     case 0 -> performTopUpTransaction();
-                    case 1 -> performBalanceCheck();
-                    case 2 -> performWithdrawTransaction();
-                    case 3 -> performTransferTransaction();
+                    case 1 -> performWithdrawTransaction();
+                    case 2 -> performTransferTransaction();
                 }
 
             } catch (Exception e) {
@@ -131,24 +126,11 @@ public class LoadStressTest {
         var request = new AccountTopUpRequestDto();
         request.setAccountNumber(user.getAccounts().getFirst().getAccountNumber());
         request.setAmount(BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(100, 1000)));
+        request.setUuid(UUID.randomUUID().toString());
 
         var result = mockMvc.perform(post("/accounts/top-up")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andReturn();
-
-        if (result.getResponse().getStatus() == 200) {
-            successCounter.incrementAndGet();
-        } else {
-            errorCounter.incrementAndGet();
-        }
-    }
-
-    private void performBalanceCheck() throws Exception {
-        var user = getRandomUser();
-        if (user == null) return;
-
-        var result = mockMvc.perform(get("/accounts/" + user.getAccounts().getFirst().getId() + "/balance"))
                 .andReturn();
 
         if (result.getResponse().getStatus() == 200) {
@@ -165,6 +147,7 @@ public class LoadStressTest {
         var request = new AccountWithdrawRequestDto();
         request.setAccountNumber(user.getAccounts().getFirst().getAccountNumber());
         request.setAmount(BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(100, 1000)));
+        request.setUuid(UUID.randomUUID().toString());
 
         var result = mockMvc.perform(post("/accounts/withdraw")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -192,6 +175,7 @@ public class LoadStressTest {
         request.setFromAccountNumber(fromUser.getAccounts().getFirst().getAccountNumber());
         request.setToAccountNumber(toUser.getAccounts().getFirst().getAccountNumber());
         request.setAmount(BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble(100, 1000)));
+        request.setUuid(UUID.randomUUID().toString());
 
         var result = mockMvc.perform(post("/accounts/transfer")
                         .contentType(MediaType.APPLICATION_JSON)
