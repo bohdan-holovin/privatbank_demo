@@ -19,10 +19,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             ORDER BY created_date
             LIMIT :limit
             FOR UPDATE SKIP LOCKED
-            """,
-            nativeQuery = true)
-    List<Transaction> findPendingTransactions(@Param("limit") int limit);
+            """, nativeQuery = true)
+    List<Transaction> findAllPendingTransactionsWithLock(@Param("limit") int limit);
 
     Optional<Transaction> findByUuid(String uuid);
+
+    @Query(value = """
+            SELECT *
+            FROM transactions t
+            WHERE t.from_account_id = :accountId OR t.to_account_id = :accountId
+            ORDER BY t.created_date DESC
+            LIMIT :limit OFFSET :offset
+            """, nativeQuery = true)
+    List<Transaction> findAllByAccountIdWithLimitAndOffset(@Param("accountId") Long accountId, @Param("limit") int limit, @Param("offset") int offset);
 }
 

@@ -61,7 +61,7 @@ public class PendingTransactionPollingAndProcessingManager {
         log.info("Worker-{} ({}): search", workerId, threadName);
 
         try {
-            var transactions = transactionService.findPendingTransactions(batchSize);
+            var transactions = transactionService.findAllPendingTransactions(batchSize);
 
             if (!transactions.isEmpty()) {
                 log.info("Worker-{} ({}): claimed {} transactions", workerId, threadName, transactions.size());

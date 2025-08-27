@@ -1,5 +1,6 @@
 package org.holovin.privatbank_demo.app.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.holovin.privatbank_demo.domain.model.Transaction;
@@ -16,8 +17,17 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
 
-    public List<Transaction> findPendingTransactions(int limit) {
-        return transactionRepository.findPendingTransactions(limit);
+    public List<Transaction> findAllPendingTransactions(int limit) {
+        return transactionRepository.findAllPendingTransactionsWithLock(limit);
+    }
+
+    public List<Transaction> findAllByAccountIdWithLimitAndOffset(Long accountId, int limit, int offset) {
+        return transactionRepository.findAllByAccountIdWithLimitAndOffset(accountId, limit, offset);
+    }
+
+    public Transaction findById(Long id) {
+        return transactionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Transaction with" + id + "not fount"));
     }
 
     public Optional<Transaction> findByUuidOptional(String uuid) {
