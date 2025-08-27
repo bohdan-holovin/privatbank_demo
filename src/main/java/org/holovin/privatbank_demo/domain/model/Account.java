@@ -86,6 +86,34 @@ public class Account extends AbstractAuditable {
         return transaction;
     }
 
+    public Transaction transferTo(Account targetAccount, BigDecimal amount) {
+        if (this.status != Status.ACTIVE) {
+            throw new InactiveAccountException(this.number);
+        }
+        if (targetAccount.status != Status.ACTIVE) {
+            throw new InactiveAccountException(targetAccount.number);
+        }
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+        if (this.currentBalance.getAvailableBalance().compareTo(amount) < 0) {
+            throw new IllegalStateException("Insufficient funds on account " + this.number);
+        }
+
+        var transaction = Transaction.createTransfer(UUID.randomUUID().toString(), amount, this, targetAccount);
+
+        addOutgoingTransaction(transaction);
+        targetAccount.addIncomingTransaction(transaction);
+
+        return transaction;
+    }
+
+    private void addOutgoingTransaction(Transaction transaction) {
+        transaction.setFromAccount(this);
+        this.outgoingTransactions.add(transaction);
+    }
+
+
     private void addIncomingTransaction(Transaction transaction) {
         transaction.setToAccount(this);
         this.incomingTransactions.add(transaction);
