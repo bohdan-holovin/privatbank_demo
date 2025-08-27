@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.app.scheduler;
+package org.holovin.privatbank_demo.app.executor;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
