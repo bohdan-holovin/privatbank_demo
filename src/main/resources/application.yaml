@@ -1,6 +1,14 @@
 server:
   port: 8080
 
+app:
+  worker:
+    worker-count: 5
+    batch-size: 10
+    polling-delay-ms: 1000
+    empty-batch-delay-ms: 2000
+    shutdown-timeout-seconds: 30
+
 spring:
   application:
     name: privatbank_demo
