@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DayBalanceScheduler {
+public class CreateDailyBalanceSnapshotsScheduler {
 
     private final DayBalanceService dayBalanceService;
 

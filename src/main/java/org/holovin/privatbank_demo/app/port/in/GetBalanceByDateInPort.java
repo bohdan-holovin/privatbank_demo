@@ -1,6 +1,6 @@
 package org.holovin.privatbank_demo.app.port.in;
 
-import org.holovin.privatbank_demo.shared.dto.response.AccountByDateResponseDto;
+import org.holovin.privatbank_demo.shared.dto.response.account.AccountByDateResponseDto;
 
 import java.time.LocalDate;
 

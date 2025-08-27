@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.holovin.privatbank_demo.app.port.in.GetTransactionInPort;
-import org.holovin.privatbank_demo.shared.dto.response.TransactionResponseDto;
+import org.holovin.privatbank_demo.shared.dto.response.transaction.TransactionResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

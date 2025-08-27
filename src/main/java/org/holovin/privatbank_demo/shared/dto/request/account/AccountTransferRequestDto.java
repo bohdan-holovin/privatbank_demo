@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.shared.dto.request;
+package org.holovin.privatbank_demo.shared.dto.request.account;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,13 +13,16 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountTopUpRequestDto {
+public class AccountTransferRequestDto {
 
     @UUID
     private String uuid;
 
     @NotBlank
-    private String accountNumber;
+    private String fromAccountNumber;
+
+    @NotBlank
+    private String toAccountNumber;
 
     @NotNull
     @Positive

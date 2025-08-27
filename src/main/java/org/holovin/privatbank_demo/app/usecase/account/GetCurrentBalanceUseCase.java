@@ -3,7 +3,7 @@ package org.holovin.privatbank_demo.app.usecase.account;
 import lombok.RequiredArgsConstructor;
 import org.holovin.privatbank_demo.app.port.in.GetCurrentBalanceInPort;
 import org.holovin.privatbank_demo.app.service.CurrentBalanceService;
-import org.holovin.privatbank_demo.shared.dto.response.AccountResponseDto;
+import org.holovin.privatbank_demo.shared.dto.response.account.AccountResponseDto;
 import org.holovin.privatbank_demo.shared.mapper.AccountMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

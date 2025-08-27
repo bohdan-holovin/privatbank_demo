@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.shared.dto.response;
+package org.holovin.privatbank_demo.shared.dto.response.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

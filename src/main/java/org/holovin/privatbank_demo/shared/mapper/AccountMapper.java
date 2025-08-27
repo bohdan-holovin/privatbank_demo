@@ -3,8 +3,8 @@ package org.holovin.privatbank_demo.shared.mapper;
 import org.holovin.privatbank_demo.domain.model.Account;
 import org.holovin.privatbank_demo.domain.model.CurrentBalance;
 import org.holovin.privatbank_demo.domain.model.DayBalance;
-import org.holovin.privatbank_demo.shared.dto.response.AccountByDateResponseDto;
-import org.holovin.privatbank_demo.shared.dto.response.AccountResponseDto;
+import org.holovin.privatbank_demo.shared.dto.response.account.AccountByDateResponseDto;
+import org.holovin.privatbank_demo.shared.dto.response.account.AccountResponseDto;
 
 public final class AccountMapper {
 
