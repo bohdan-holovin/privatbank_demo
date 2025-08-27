@@ -12,6 +12,7 @@ public final class TransactionMapper {
         dto.setUuid(transaction.getUuid());
         dto.setAmount(transaction.getAmount());
         dto.setStatus(transaction.getStatus().name());
+        dto.setType(transaction.getType().name());
         dto.setProcessedAt(transaction.getProcessedAt());
         dto.setFromAccountNumber(transaction.getFromAccount() != null ? transaction.getFromAccount().getNumber() : null);
         dto.setToAccountNumber(transaction.getToAccount() != null ? transaction.getToAccount().getNumber() : null);

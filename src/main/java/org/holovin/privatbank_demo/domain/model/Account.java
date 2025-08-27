@@ -7,6 +7,7 @@ import org.holovin.privatbank_demo.domain.exception.InsufficientFundsException;
 import org.holovin.privatbank_demo.domain.model.base.AbstractAuditable;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,13 +28,13 @@ public class Account extends AbstractAuditable {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "fromAccount",
             fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private List<Transaction> outgoingTransactions;
+    private List<Transaction> outgoingTransactions = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "toAccount",
             fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private List<Transaction> incomingTransactions;
+    private List<Transaction> incomingTransactions = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

@@ -16,8 +16,8 @@ public class TransactionResponseDto {
     private String uuid;
     private BigDecimal amount;
     private String status;
+    private String type;
     private LocalDateTime processedAt;
-    private String description;
     private String fromAccountNumber;
     private String toAccountNumber;
 }

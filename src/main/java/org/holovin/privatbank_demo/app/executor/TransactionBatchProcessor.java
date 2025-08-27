@@ -26,7 +26,7 @@ public class TransactionBatchProcessor {
             }
 
             try {
-                processTransactionUseCase.processTransaction(transaction);
+                processTransactionUseCase.execute(transaction);
                 result.incrementProcessed();
                 log.debug("Worker-{}: processed transaction {} {}", workerId, transaction.getId(), transaction.getUuid());
             } catch (Exception e) {
