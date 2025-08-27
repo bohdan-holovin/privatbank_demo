@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.domain.repository;
+package org.holovin.privatbank_demo.infra.db.repository;
 
 import org.holovin.privatbank_demo.domain.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,7 @@
-package org.holovin.privatbank_demo.app.usecase;
+package org.holovin.privatbank_demo.app.usecase.transaction;
 
 import lombok.RequiredArgsConstructor;
+import org.holovin.privatbank_demo.app.port.in.GetTransactionsInPort;
 import org.holovin.privatbank_demo.app.service.TransactionService;
 import org.holovin.privatbank_demo.shared.dto.response.TransactionResponseDto;
 import org.holovin.privatbank_demo.shared.mapper.TransactionMapper;
@@ -11,11 +12,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GetTransactionsUseCase {
+public class GetTransactionsUseCase implements GetTransactionsInPort {
 
     private final TransactionService transactionService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<TransactionResponseDto> execute(Long accountId, Integer limit, Integer offset) {
         var transactions = transactionService.findAllByAccountIdWithLimitAndOffset(accountId, limit, offset);
 
