@@ -12,6 +12,8 @@ CREATE TABLE current_balances
     created_by_id       BIGINT,
     modified_by_id      BIGINT,
 
+    CONSTRAINT uk_current_balances_account_id UNIQUE (account_id),
+    CONSTRAINT ck_current_balances_amounts CHECK (available_balance >= 0 AND pending_balance >= 0),
     CONSTRAINT fk_current_balances_account FOREIGN KEY (account_id) REFERENCES accounts (id),
     CONSTRAINT fk_current_balances_last_transaction FOREIGN KEY (last_transaction_id) REFERENCES transactions (id),
     CONSTRAINT fk_current_balances_created_by FOREIGN KEY (created_by_id) REFERENCES users (id),
