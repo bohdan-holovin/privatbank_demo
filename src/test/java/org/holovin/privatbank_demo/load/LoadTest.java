@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class LoadTest {
 
     private static final int CONCURRENT_USERS = 50;
-    private static final int REQUESTS_PER_USER = 20;
+    private static final int REQUESTS_PER_USER = 500;
     private final List<UserResponseDto> users = new CopyOnWriteArrayList<>();
     private final AtomicInteger successCounter = new AtomicInteger(0);
     private final AtomicInteger errorCounter = new AtomicInteger(0);
@@ -66,7 +66,7 @@ public class LoadTest {
 
         CompletableFuture.allOf(transactionTasks.toArray(new CompletableFuture[0])).join();
 
-        Thread.sleep(40000);
+        Thread.sleep(60000);
 
         printResults();
         printTransactionStatistics(getTransactionCount());
