@@ -19,13 +19,13 @@ public class AccountController {
     private final GetCurrentBalanceUseCase getCurrentBalanceUseCase;
     private final TopUpAccountUseCase topUpAccountUseCase;
 
-    @GetMapping("/account/{id}/balance")
+    @GetMapping("/accounts/{id}/balance")
     public ResponseEntity<AccountResponseDto> getBalance(@PathVariable @Valid @NotNull @Positive Long id) {
         var accountResponseDto = getCurrentBalanceUseCase.execute(id);
         return ResponseEntity.ok(accountResponseDto);
     }
 
-    @PostMapping("/account/top-up")
+    @PostMapping("/accounts/top-up")
     public ResponseEntity<TransactionResponseDto> topUpAccount(@Valid @RequestBody AccountTopUpRequestDto request) {
         var transactionResponseDto = topUpAccountUseCase.execute(request);
         return ResponseEntity.ok(transactionResponseDto);

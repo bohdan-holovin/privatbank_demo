@@ -13,11 +13,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AccountCurrentBalance extends AbstractAuditable {
+public class CurrentBalance extends AbstractAuditable {
 
     private BigDecimal availableBalance;
 
-    private BigDecimal pendingBalance = BigDecimal.ZERO;
+    private BigDecimal pendingBalance;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -30,6 +30,13 @@ public class AccountCurrentBalance extends AbstractAuditable {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "account_id")
     private Account account;
+
+    public static CurrentBalance create() {
+        var currentBalance = new CurrentBalance();
+        currentBalance.setAvailableBalance(BigDecimal.ZERO);
+        currentBalance.setPendingBalance(BigDecimal.ZERO);
+        return currentBalance;
+    }
 
     public void reserveFunds(BigDecimal amount) {
         if (availableBalance.compareTo(amount) < 0) {

@@ -8,12 +8,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "account_day_balances")
+@Table(name = "day_balances")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AccountDayBalance extends AbstractAuditable {
+public class DayBalance extends AbstractAuditable {
 
     private LocalDate balanceDate;
     private BigDecimal openingBalance;

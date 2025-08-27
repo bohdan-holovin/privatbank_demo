@@ -6,18 +6,18 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
+import org.holovin.privatbank_demo.infra.web.controller.annotation.UniqueUsername;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountTopUpRequestDto {
+public class UserRegistrationRequestDto {
 
     @NotBlank
-    private String accountNumber;
+    @UniqueUsername
+    private String username;
 
     @NotNull
     @Positive
-    private BigDecimal amount;
+    private Integer accountCount;
 }

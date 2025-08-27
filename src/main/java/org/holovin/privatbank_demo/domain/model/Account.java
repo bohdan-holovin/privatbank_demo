@@ -6,7 +6,6 @@ import org.holovin.privatbank_demo.domain.exception.InactiveAccountException;
 import org.holovin.privatbank_demo.domain.model.base.AbstractAuditable;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,8 +21,6 @@ public class Account extends AbstractAuditable {
 
     @Enumerated(EnumType.STRING)
     private Status status;
-
-    private LocalDate closingDate;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -41,18 +38,39 @@ public class Account extends AbstractAuditable {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "account",
             fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private List<AccountDayBalance> balances;
+    private List<DayBalance> balances;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private AccountCurrentBalance currentBalance;
+    private CurrentBalance currentBalance;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
     private User user;
+
+    public static Account create() {
+        var account = new Account();
+        account.setNumber(generateNumber());
+        account.setStatus(Account.Status.ACTIVE);
+
+        var currentBalance = CurrentBalance.create();
+        account.addCurrentBalance(currentBalance);
+        return account;
+    }
+
+    private static String generateNumber() {
+        var uuid = UUID.randomUUID();
+        long hash = Math.abs((long) uuid.hashCode());
+        return String.format("%016d", hash);
+    }
+
+    private void addCurrentBalance(CurrentBalance currentBalance) {
+        currentBalance.setAccount(this);
+        this.currentBalance = currentBalance;
+    }
 
     public Transaction topUp(BigDecimal amount) {
         if (this.status != Status.ACTIVE) {

@@ -4,7 +4,6 @@ CREATE TABLE accounts
 
     number         VARCHAR(20) NOT NULL UNIQUE,
     status         VARCHAR(20),
-    closing_date   DATE,
     user_id        BIGINT      NOT NULL,
 
     created_date   TIMESTAMP   NOT NULL,
