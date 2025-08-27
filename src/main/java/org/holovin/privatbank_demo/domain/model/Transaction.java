@@ -53,6 +53,18 @@ public class Transaction extends AbstractAuditable {
                 .build();
     }
 
+    public static Transaction createTransfer(String uuid, BigDecimal amount, Account fromAccount, Account toAccount) {
+        return Transaction.builder()
+                .uuid(uuid)
+                .amount(amount)
+                .processedAt(null)
+                .type(Type.TRANSFER)
+                .status(Status.PENDING)
+                .fromAccount(fromAccount)
+                .toAccount(toAccount)
+                .build();
+    }
+
     public void process() {
         this.status = Status.PROCESSING;
 
