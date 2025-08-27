@@ -78,7 +78,7 @@ public class Transaction extends AbstractAuditable {
                     fromAccount.getCurrentBalance().commitDebit(amount, this);
                     toAccount.getCurrentBalance().commitCredit(amount, this);
                 }
-                case WITHDRAWAL -> fromAccount.getCurrentBalance().commitDebit(amount, this);
+                case WITHDRAW -> fromAccount.getCurrentBalance().commitDebit(amount, this);
                 case TOP_UP -> toAccount.getCurrentBalance().commitCredit(amount, this);
             }
 
@@ -94,12 +94,23 @@ public class Transaction extends AbstractAuditable {
         }
     }
 
+    public static Transaction createWithdraw(String uuid, BigDecimal amount, Account fromAccount) {
+        return Transaction.builder()
+                .uuid(uuid)
+                .amount(amount)
+                .processedAt(null)
+                .type(Type.WITHDRAW)
+                .status(Status.PENDING)
+                .fromAccount(fromAccount)
+                .build();
+    }
+
     private boolean isDebitOperation() {
-        return type == Type.TRANSFER || type == Type.WITHDRAWAL;
+        return type == Type.TRANSFER || type == Type.WITHDRAW;
     }
 
     public enum Type {
-        TOP_UP, TRANSFER, WITHDRAWAL
+        TOP_UP, TRANSFER, WITHDRAW
     }
 
     public enum Status {

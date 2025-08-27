@@ -3,6 +3,7 @@ package org.holovin.privatbank_demo.domain.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.holovin.privatbank_demo.domain.exception.InactiveAccountException;
+import org.holovin.privatbank_demo.domain.exception.InsufficientFundsException;
 import org.holovin.privatbank_demo.domain.model.base.AbstractAuditable;
 
 import java.math.BigDecimal;
@@ -97,7 +98,7 @@ public class Account extends AbstractAuditable {
             throw new IllegalArgumentException("Amount must be positive");
         }
         if (this.currentBalance.getAvailableBalance().compareTo(amount) < 0) {
-            throw new IllegalStateException("Insufficient funds on account " + this.number);
+            throw new InsufficientFundsException("Not enough funds to reserve");
         }
 
         var transaction = Transaction.createTransfer(UUID.randomUUID().toString(), amount, this, targetAccount);
@@ -108,11 +109,28 @@ public class Account extends AbstractAuditable {
         return transaction;
     }
 
+    public Transaction withdraw(BigDecimal amount) {
+        if (this.status != Status.ACTIVE) {
+            throw new InactiveAccountException(number);
+        }
+
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+
+        if (this.currentBalance.getAvailableBalance().compareTo(amount) < 0) {
+            throw new InsufficientFundsException("Not enough funds to reserve");
+        }
+
+        var transaction = Transaction.createWithdraw(UUID.randomUUID().toString(), amount, this);
+        addOutgoingTransaction(transaction);
+        return transaction;
+    }
+
     private void addOutgoingTransaction(Transaction transaction) {
         transaction.setFromAccount(this);
         this.outgoingTransactions.add(transaction);
     }
-
 
     private void addIncomingTransaction(Transaction transaction) {
         transaction.setToAccount(this);

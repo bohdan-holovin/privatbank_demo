@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.holovin.privatbank_demo.app.usecase.GetCurrentBalanceUseCase;
 import org.holovin.privatbank_demo.app.usecase.TopUpAccountUseCase;
 import org.holovin.privatbank_demo.app.usecase.TransferUseCase;
+import org.holovin.privatbank_demo.app.usecase.WithdrawAccountUseCase;
 import org.holovin.privatbank_demo.shared.dto.request.AccountTopUpRequestDto;
 import org.holovin.privatbank_demo.shared.dto.request.AccountTransferRequestDto;
+import org.holovin.privatbank_demo.shared.dto.request.AccountWithdrawRequestDto;
 import org.holovin.privatbank_demo.shared.dto.response.AccountResponseDto;
 import org.holovin.privatbank_demo.shared.dto.response.TransactionResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ public class AccountController {
     private final GetCurrentBalanceUseCase getCurrentBalanceUseCase;
     private final TopUpAccountUseCase topUpAccountUseCase;
     private final TransferUseCase transferUseCase;
+    private final WithdrawAccountUseCase withdrawAccountUseCase;
 
     @GetMapping("/accounts/{id}/balance")
     public ResponseEntity<AccountResponseDto> getBalance(@PathVariable @Valid @NotNull @Positive Long id) {
@@ -37,6 +40,12 @@ public class AccountController {
     @PostMapping("/accounts/transfer")
     public ResponseEntity<TransactionResponseDto> transfer(@Valid @RequestBody AccountTransferRequestDto request) {
         var transactionResponseDto = transferUseCase.execute(request);
+        return ResponseEntity.ok(transactionResponseDto);
+    }
+
+    @PostMapping("/accounts/withdraw")
+    public ResponseEntity<TransactionResponseDto> withdraw(@Valid @RequestBody AccountWithdrawRequestDto request) {
+        var transactionResponseDto = withdrawAccountUseCase.execute(request);
         return ResponseEntity.ok(transactionResponseDto);
     }
 }
