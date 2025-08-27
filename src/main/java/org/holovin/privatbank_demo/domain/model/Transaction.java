@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Builder
 public class Transaction extends AbstractAuditable {
 
     private String uuid;
@@ -43,37 +42,37 @@ public class Transaction extends AbstractAuditable {
     private Account toAccount;
 
     public static Transaction createTopUp(String uuid, BigDecimal amount, Account toAccount) {
-        return Transaction.builder()
-                .uuid(uuid)
-                .amount(amount)
-                .processedAt(null)
-                .type(Type.TOP_UP)
-                .status(Status.PENDING)
-                .toAccount(toAccount)
-                .build();
+        var tx = new Transaction();
+        tx.setUuid(uuid);
+        tx.setAmount(amount);
+        tx.setProcessedAt(null);
+        tx.setType(Type.TOP_UP);
+        tx.setStatus(Status.PENDING);
+        tx.setToAccount(toAccount);
+        return tx;
     }
 
     public static Transaction createTransfer(String uuid, BigDecimal amount, Account fromAccount, Account toAccount) {
-        return Transaction.builder()
-                .uuid(uuid)
-                .amount(amount)
-                .processedAt(null)
-                .type(Type.TRANSFER)
-                .status(Status.PENDING)
-                .fromAccount(fromAccount)
-                .toAccount(toAccount)
-                .build();
+        var tx = new Transaction();
+        tx.setUuid(uuid);
+        tx.setAmount(amount);
+        tx.setProcessedAt(null);
+        tx.setType(Type.TRANSFER);
+        tx.setStatus(Status.PENDING);
+        tx.setFromAccount(fromAccount);
+        tx.setToAccount(toAccount);
+        return tx;
     }
 
     public static Transaction createWithdraw(String uuid, BigDecimal amount, Account fromAccount) {
-        return Transaction.builder()
-                .uuid(uuid)
-                .amount(amount)
-                .processedAt(null)
-                .type(Type.WITHDRAW)
-                .status(Status.PENDING)
-                .fromAccount(fromAccount)
-                .build();
+        var tx = new Transaction();
+        tx.setUuid(uuid);
+        tx.setAmount(amount);
+        tx.setProcessedAt(null);
+        tx.setType(Type.WITHDRAW);
+        tx.setStatus(Status.PENDING);
+        tx.setFromAccount(fromAccount);
+        return tx;
     }
 
     public void process() {
@@ -105,12 +104,12 @@ public class Transaction extends AbstractAuditable {
         }
     }
 
-    private boolean isDebitOperation() {
-        return type == Type.TRANSFER || type == Type.WITHDRAW;
-    }
-
     public boolean isSameOperation(BigDecimal amount, Type type) {
         return this.amount.compareTo(amount) == 0 && this.type == type;
+    }
+
+    private boolean isDebitOperation() {
+        return type == Type.TRANSFER || type == Type.WITHDRAW;
     }
 
     public enum Type {
@@ -118,9 +117,6 @@ public class Transaction extends AbstractAuditable {
     }
 
     public enum Status {
-        PENDING,
-        PROCESSING,
-        COMPLETED,
-        FAILED
+        PENDING, PROCESSING, COMPLETED, FAILED
     }
 }

@@ -68,11 +68,6 @@ public class Account extends AbstractAuditable {
         return String.format("%016d", hash);
     }
 
-    private void addCurrentBalance(CurrentBalance currentBalance) {
-        currentBalance.setAccount(this);
-        this.currentBalance = currentBalance;
-    }
-
     public Transaction topUp(BigDecimal amount, String uuid) {
         if (this.status != Status.ACTIVE) {
             throw new InactiveAccountException(number);
@@ -135,6 +130,11 @@ public class Account extends AbstractAuditable {
     private void addIncomingTransaction(Transaction transaction) {
         transaction.setToAccount(this);
         this.incomingTransactions.add(transaction);
+    }
+
+    private void addCurrentBalance(CurrentBalance currentBalance) {
+        currentBalance.setAccount(this);
+        this.currentBalance = currentBalance;
     }
 
     public enum Status {

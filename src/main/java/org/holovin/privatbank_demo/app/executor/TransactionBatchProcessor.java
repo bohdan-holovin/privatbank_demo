@@ -2,7 +2,7 @@ package org.holovin.privatbank_demo.app.executor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.holovin.privatbank_demo.app.usecase.worker.ProcessTransactionUseCase;
+import org.holovin.privatbank_demo.app.usecase.transaction.ProcessTransactionUseCase;
 import org.holovin.privatbank_demo.domain.model.Transaction;
 import org.springframework.stereotype.Component;
 

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-public class UtilController {
+public class UuidController {
 
     @GetMapping("/uuid")
     public ResponseEntity<String> generateUuid() {

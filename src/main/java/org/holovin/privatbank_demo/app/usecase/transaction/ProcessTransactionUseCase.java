@@ -1,4 +1,4 @@
-package org.holovin.privatbank_demo.app.usecase.worker;
+package org.holovin.privatbank_demo.app.usecase.transaction;
 
 import lombok.RequiredArgsConstructor;
 import org.holovin.privatbank_demo.app.service.TransactionService;

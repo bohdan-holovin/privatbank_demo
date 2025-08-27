@@ -3,7 +3,7 @@ package org.holovin.privatbank_demo.app.usecase.transaction;
 import lombok.RequiredArgsConstructor;
 import org.holovin.privatbank_demo.app.port.in.GetTransactionsInPort;
 import org.holovin.privatbank_demo.app.service.TransactionService;
-import org.holovin.privatbank_demo.shared.dto.response.TransactionResponseDto;
+import org.holovin.privatbank_demo.shared.dto.response.transaction.TransactionResponseDto;
 import org.holovin.privatbank_demo.shared.mapper.TransactionMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

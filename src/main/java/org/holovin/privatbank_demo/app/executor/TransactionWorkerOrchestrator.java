@@ -27,15 +27,15 @@ public class TransactionWorkerOrchestrator {
         log.info("Started {} async transaction workers using prototype scope", config.getWorkerCount());
     }
 
-    private void startWorker(int workerId) {
-        var workerTask = applicationContext.getBean(TransactionWorkerTask.class);
-        workerTask.setWorkerId(workerId);
-        workerTask.startProcessing();
-    }
-
     @PreDestroy
     public void shutdown() {
         log.info("Shutting down transaction workers...");
         stateManager.initiateShutdown();
+    }
+
+    private void startWorker(int workerId) {
+        var workerTask = applicationContext.getBean(TransactionWorkerTask.class);
+        workerTask.setWorkerId(workerId);
+        workerTask.startProcessing();
     }
 }
