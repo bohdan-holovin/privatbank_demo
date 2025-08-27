@@ -33,15 +33,15 @@ public interface DayBalanceRepository extends JpaRepository<DayBalance, Long> {
                 :balanceDate,
                 cb.available_balance,
                 cb.pending_balance,
-                :createdAt,
-                :createdAt,
+                :createdDate,
+                :createdDate,
                 NULL,
                 NULL
             FROM accounts a
             INNER JOIN current_balances cb ON a.id = cb.account_id
             WHERE a.status = 'ACTIVE'
             """, nativeQuery = true)
-    int createDailySnapshotsBulk(@Param("balanceDate") LocalDate balanceDate, @Param("createdAt") LocalDateTime createdAt);
+    int createDailySnapshotsBulk(@Param("balanceDate") LocalDate balanceDate, @Param("createdDate") LocalDateTime createdDate);
 
     @Query("SELECT COUNT(db) > 0 FROM DayBalance db WHERE db.balanceDate = :balanceDate")
     boolean existsByBalanceDate(@Param("balanceDate") LocalDate balanceDate);
